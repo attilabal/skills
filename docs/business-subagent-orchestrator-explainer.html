@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Business Subagent Orchestrator - Visual Explainer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-display: "Instrument Serif", Georgia, serif;
+      --font-body: "IBM Plex Sans", system-ui, sans-serif;
+      --font-mono: "JetBrains Mono", "SF Mono", Consolas, monospace;
+
+      --bg: #f8f4ee;
+      --surface: #fffdf8;
+      --surface-2: #f0e7d9;
+      --text: #221b14;
+      --text-soft: #66584a;
+      --muted: #8a7b6b;
+      --border: rgba(34, 27, 20, 0.12);
+      --border-strong: rgba(34, 27, 20, 0.22);
+      --blue: #17395c;
+      --blue-soft: rgba(23, 57, 92, 0.10);
+      --gold: #b68122;
+      --gold-soft: rgba(182, 129, 34, 0.13);
+      --sage: #587a47;
+      --sage-soft: rgba(88, 122, 71, 0.12);
+      --rose: #9d2f43;
+      --rose-soft: rgba(157, 47, 67, 0.11);
+      --teal: #0f6f67;
+      --teal-soft: rgba(15, 111, 103, 0.10);
+      --ink: #14100c;
+      --shadow: 0 18px 45px rgba(58, 43, 29, 0.10);
+      --shadow-small: 0 8px 24px rgba(58, 43, 29, 0.08);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #14120f;
+        --surface: #1f1a15;
+        --surface-2: #2b241a;
+        --text: #f1e8dc;
+        --text-soft: #c9b9a6;
+        --muted: #9f8f7e;
+        --border: rgba(241, 232, 220, 0.10);
+        --border-strong: rgba(241, 232, 220, 0.22);
+        --blue: #8fbbe0;
+        --blue-soft: rgba(143, 187, 224, 0.12);
+        --gold: #e8b957;
+        --gold-soft: rgba(232, 185, 87, 0.12);
+        --sage: #a7c88f;
+        --sage-soft: rgba(167, 200, 143, 0.12);
+        --rose: #e58a9a;
+        --rose-soft: rgba(229, 138, 154, 0.12);
+        --teal: #7fd5cc;
+        --teal-soft: rgba(127, 213, 204, 0.12);
+        --ink: #f7efe4;
+        --shadow: 0 18px 48px rgba(0, 0, 0, 0.25);
+        --shadow-small: 0 8px 24px rgba(0, 0, 0, 0.18);
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: var(--font-body);
+      background:
+        radial-gradient(920px 520px at 7% 0%, var(--gold-soft), transparent 62%),
+        radial-gradient(780px 560px at 92% 12%, var(--blue-soft), transparent 58%),
+        linear-gradient(90deg, rgba(34, 27, 20, 0.034) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(34, 27, 20, 0.024) 1px, transparent 1px),
+        var(--bg);
+      background-size: auto, auto, 34px 34px, 34px 34px, auto;
+      padding: 34px;
+    }
+
+    .wrap {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 180px minmax(0, 1fr);
+      gap: 0 40px;
+    }
+
+    .toc {
+      position: sticky;
+      top: 24px;
+      align-self: start;
+      padding: 12px 0;
+      max-height: calc(100dvh - 48px);
+      overflow-y: auto;
+    }
+
+    .toc-title {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+      margin-bottom: 10px;
+    }
+
+    .toc a {
+      display: block;
+      text-decoration: none;
+      color: var(--text-soft);
+      font-size: 12px;
+      line-height: 1.35;
+      padding: 7px 9px;
+      border-left: 2px solid transparent;
+      border-radius: 0 6px 6px 0;
+      transition: 150ms ease;
+    }
+
+    .toc a:hover,
+    .toc a.active {
+      color: var(--text);
+      background: var(--surface-2);
+      border-left-color: var(--gold);
+    }
+
+    .main { min-width: 0; }
+
+    .hero {
+      min-height: 70vh;
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, 430px);
+      gap: 38px;
+      align-items: end;
+      padding: 52px;
+      border: 1px solid var(--border-strong);
+      background:
+        linear-gradient(135deg, color-mix(in srgb, var(--surface) 92%, var(--gold) 8%), var(--surface)),
+        var(--surface);
+      box-shadow: var(--shadow);
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 24px;
+      border: 1px solid var(--border);
+      pointer-events: none;
+    }
+
+    .hero-content,
+    .signal-grid {
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 1.7px;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(52px, 7vw, 104px);
+      line-height: 0.94;
+      letter-spacing: 0;
+      font-weight: 400;
+      margin: 0 0 22px;
+      text-wrap: balance;
+      overflow-wrap: break-word;
+      hyphens: auto;
+    }
+
+    .lead {
+      max-width: 780px;
+      margin: 0;
+      color: var(--text-soft);
+      font-size: clamp(18px, 2.2vw, 25px);
+      line-height: 1.34;
+    }
+
+    .hero-rule {
+      width: 112px;
+      height: 2px;
+      background: var(--gold);
+      margin: 28px 0;
+    }
+
+    .signal-grid {
+      align-self: start;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .signal {
+      min-height: 104px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      background: color-mix(in srgb, var(--surface) 82%, var(--surface-2) 18%);
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .signal strong {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+    }
+
+    .signal span {
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .section {
+      scroll-margin-top: 24px;
+      margin-top: 34px;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: baseline;
+      margin-bottom: 16px;
+    }
+
+    .section-num {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gold);
+      border-top: 2px solid var(--gold);
+      padding-top: 8px;
+      min-width: 46px;
+    }
+
+    h2 {
+      font-family: var(--font-display);
+      font-size: clamp(34px, 4vw, 58px);
+      line-height: 1;
+      letter-spacing: 0;
+      font-weight: 400;
+      margin: 0;
+    }
+
+    .section-note {
+      color: var(--text-soft);
+      font-size: 16px;
+      line-height: 1.55;
+      max-width: 870px;
+      margin: 0 0 18px 60px;
+    }
+
+    .board {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: 8px;
+      box-shadow: var(--shadow-small);
+      padding: 22px;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .flow-step {
+      border: 1px solid var(--border);
+      border-top: 4px solid var(--blue);
+      background: color-mix(in srgb, var(--surface) 88%, var(--blue) 4%);
+      border-radius: 6px;
+      padding: 16px;
+      min-height: 150px;
+    }
+
+    .label {
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      font-weight: 700;
+      font-size: 10px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      line-height: 1.22;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    .flow-step p,
+    .mode p,
+    .gate p,
+    .ladder-step p,
+    .principle p,
+    .trace-step p {
+      color: var(--text-soft);
+      line-height: 1.48;
+      font-size: 14px;
+    }
+
+    .pull {
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .quote {
+      background: var(--ink);
+      color: var(--surface);
+      border-radius: 8px;
+      padding: 28px;
+      min-height: 260px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .quote p {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4vw, 48px);
+      line-height: 1.04;
+    }
+
+    .quote small {
+      font-family: var(--font-mono);
+      color: color-mix(in srgb, var(--surface) 72%, transparent);
+      text-transform: uppercase;
+      letter-spacing: 1.3px;
+      font-size: 11px;
+    }
+
+    .principles {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .principle {
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--sage);
+      background: var(--surface);
+      border-radius: 6px;
+      padding: 16px;
+    }
+
+    .modes {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .mode {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: 8px;
+      min-height: 250px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .mode:nth-child(1) { border-top: 5px solid var(--sage); }
+    .mode:nth-child(2) { border-top: 5px solid var(--teal); }
+    .mode:nth-child(3) { border-top: 5px solid var(--gold); }
+    .mode:nth-child(4) { border-top: 5px solid var(--blue); }
+    .mode:nth-child(5) { border-top: 5px solid var(--rose); }
+
+    .when {
+      margin-top: 18px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      line-height: 1.45;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+      gap: 16px;
+    }
+
+    .lead-card {
+      border: 1px solid var(--border);
+      background: color-mix(in srgb, var(--surface) 90%, var(--gold) 6%);
+      border-radius: 8px;
+      padding: 22px;
+    }
+
+    .lead-card h3 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 38px;
+      line-height: 1;
+      margin-bottom: 14px;
+    }
+
+    .compact-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+
+    .compact-list li {
+      position: relative;
+      padding-left: 18px;
+      color: var(--text-soft);
+      line-height: 1.45;
+    }
+
+    .compact-list li::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--gold);
+      position: absolute;
+      left: 0;
+      top: 0.63em;
+    }
+
+    .delegation-card {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .card-line {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: 6px;
+      padding: 13px;
+      min-height: 82px;
+    }
+
+    .card-line b {
+      display: block;
+      font-family: var(--font-mono);
+      color: var(--blue);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    .card-line span {
+      color: var(--text-soft);
+      line-height: 1.42;
+      font-size: 14px;
+    }
+
+    .ladder,
+    .quality-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .ladder-step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px;
+      min-height: 220px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ladder-step::before {
+      content: attr(data-level);
+      position: absolute;
+      right: 12px;
+      top: 6px;
+      font-family: var(--font-display);
+      font-size: 76px;
+      line-height: 1;
+      color: color-mix(in srgb, var(--gold) 18%, transparent);
+      pointer-events: none;
+    }
+
+    .ladder-step h3,
+    .ladder-step p,
+    .ladder-step .label {
+      position: relative;
+    }
+
+    .gates {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .gate {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      background: var(--surface);
+    }
+
+    .gate.stop { border-top: 5px solid var(--rose); }
+    .gate.go { border-top: 5px solid var(--sage); }
+    .gate.source { border-top: 5px solid var(--teal); }
+
+    .tag {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 5px 8px;
+      margin-bottom: 14px;
+    }
+
+    .quality {
+      background: color-mix(in srgb, var(--surface) 78%, var(--surface-2) 22%);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px;
+      min-height: 112px;
+    }
+
+    .quality b {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+
+    .quality span {
+      color: var(--text-soft);
+      font-size: 13px;
+      line-height: 1.42;
+    }
+
+    .file-structure {
+      font-family: var(--font-mono);
+      border: 1px solid var(--border);
+      background: var(--ink);
+      color: var(--surface);
+      border-radius: 8px;
+      padding: 22px;
+      overflow-x: auto;
+      line-height: 1.75;
+      font-size: 13px;
+      white-space: pre;
+    }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.92em;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 5px;
+      color: var(--blue);
+    }
+
+    .callout {
+      border: 1px solid color-mix(in srgb, var(--border) 60%, var(--gold) 40%);
+      background: color-mix(in srgb, var(--surface) 86%, var(--gold) 7%);
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 14px;
+      color: var(--text-soft);
+      line-height: 1.55;
+    }
+
+    .footer {
+      margin: 44px 0 10px;
+      padding: 18px 0 0;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .reveal {
+      animation: fadeUp 520ms ease both;
+      animation-delay: calc(var(--i, 0) * 70ms);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-delay: 0ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    @media (max-width: 1180px) {
+      .hero {
+        min-height: auto;
+        grid-template-columns: 1fr;
+        align-items: start;
+      }
+
+      .flow,
+      .modes,
+      .ladder,
+      .quality-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 1000px) {
+      body { padding: 0 24px 30px; }
+
+      .wrap {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+
+      .toc {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: flex;
+        gap: 4px;
+        align-items: center;
+        overflow-x: auto;
+        max-height: none;
+        background: var(--bg);
+        border-bottom: 1px solid var(--border);
+        margin: 0 -24px 22px;
+        padding: 10px 24px;
+      }
+
+      .toc::-webkit-scrollbar { display: none; }
+      .toc-title { display: none; }
+
+      .toc a {
+        flex: 0 0 auto;
+        border-left: 0;
+        border-bottom: 2px solid transparent;
+        border-radius: 4px 4px 0 0;
+        white-space: nowrap;
+      }
+
+      .toc a.active { border-bottom-color: var(--gold); }
+      .section { scroll-margin-top: 70px; }
+    }
+
+    @media (max-width: 760px) {
+      .hero { padding: 28px; }
+      .hero::before { inset: 14px; }
+
+      .signal-grid,
+      .flow,
+      .modes,
+      .split,
+      .pull,
+      .principles,
+      .delegation-card,
+      .ladder,
+      .gates,
+      .quality-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-note { margin-left: 0; }
+
+      .section-head {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="toc" id="toc" aria-label="Page navigation">
+      <div class="toc-title">Map</div>
+      <a href="#model" class="active">Model</a>
+      <a href="#runtime">Runtime</a>
+      <a href="#modes">Modes</a>
+      <a href="#delegation">Delegation</a>
+      <a href="#verification">Verification</a>
+      <a href="#stop-go">Stop/go</a>
+      <a href="#quality">Quality</a>
+      <a href="#package">Package</a>
+    </nav>
+
+    <main class="main">
+      <header class="hero reveal" style="--i: 0">
+        <div class="hero-content">
+          <div class="eyebrow">Business Subagent Orchestrator</div>
+          <h1>A complexity gate for business work.</h1>
+          <div class="hero-rule"></div>
+          <p class="lead">
+            This skill helps an AI agent decide how much process a business task deserves:
+            one pass, a reviewer pass, bounded subagent delegation, a small role team, or a
+            larger workflow.
+          </p>
+        </div>
+        <div class="signal-grid" aria-label="Core signals">
+          <div class="signal"><strong>Trigger</strong><span>manual</span></div>
+          <div class="signal"><strong>Default</strong><span>cautious</span></div>
+          <div class="signal"><strong>Sources</strong><span>strict</span></div>
+          <div class="signal"><strong>Output</strong><span>free-form</span></div>
+          <div class="signal"><strong>Delegation</strong><span>bounded</span></div>
+          <div class="signal"><strong>Verification</strong><span>risk-based</span></div>
+        </div>
+      </header>
+
+      <section class="section reveal" id="model" style="--i: 1">
+        <div class="section-head">
+          <div class="section-num">01</div>
+          <h2>The mental model</h2>
+        </div>
+        <p class="section-note">
+          The skill behaves like a pragmatic operations lead. It does not try to make
+          every task look sophisticated. It chooses the minimum reliable operating model.
+        </p>
+        <div class="pull">
+          <div class="quote">
+            <p>The question is not how many agents to run. The question is where fresh eyes, bounded workers, or a hard stop actually reduce risk.</p>
+            <small>Core principle</small>
+          </div>
+          <div class="principles">
+            <div class="principle">
+              <div class="label">Gatekeeping</div>
+              <h3>Mode first, output second</h3>
+              <p>The agent chooses the work mode before producing the final material.</p>
+            </div>
+            <div class="principle">
+              <div class="label">Proportionality</div>
+              <h3>Escalate one level</h3>
+              <p>When unsure, it becomes more careful without jumping straight to a full workflow.</p>
+            </div>
+            <div class="principle">
+              <div class="label">Source discipline</div>
+              <h3>Do not invent missing facts</h3>
+              <p>Unsupported facts become questions, assumptions, risks, or constraints.</p>
+            </div>
+            <div class="principle">
+              <div class="label">Output freedom</div>
+              <h3>No fixed template library</h3>
+              <p>The output shape follows the purpose, audience, and next action.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section reveal" id="runtime" style="--i: 2">
+        <div class="section-head">
+          <div class="section-num">02</div>
+          <h2>Runtime behavior</h2>
+        </div>
+        <p class="section-note">
+          The skill makes a quick work-mode decision from available context. It asks for
+          clarification only when the missing answer could materially change the mode,
+          risk level, or final-use context.
+        </p>
+        <div class="board">
+          <div class="flow">
+            <div class="flow-step">
+              <div class="label">1. Request</div>
+              <h3>Complex business task</h3>
+              <p>Documents, project notes, sales material, RFP input, account research, or executive work.</p>
+            </div>
+            <div class="flow-step">
+              <div class="label">2. Triage</div>
+              <h3>Measure the risk</h3>
+              <p>Input volume, source quality, audience, cost of error, verifiability, and time pressure.</p>
+            </div>
+            <div class="flow-step">
+              <div class="label">3. Mode</div>
+              <h3>Visible choice</h3>
+              <p>In the MVP, the agent states the selected work mode and one concise reason.</p>
+            </div>
+            <div class="flow-step">
+              <div class="label">4. Work</div>
+              <h3>Create or delegate</h3>
+              <p>The lead agent may draft, review, delegate bounded work, or coordinate roles.</p>
+            </div>
+            <div class="flow-step">
+              <div class="label">5. Gates</div>
+              <h3>Final discipline</h3>
+              <p>Source support, gaps, contradictions, overclaims, usability, and stop/go checks.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section reveal" id="modes" style="--i: 3">
+        <div class="section-head">
+          <div class="section-num">03</div>
+          <h2>The five work modes</h2>
+        </div>
+        <p class="section-note">
+          These modes form a ladder. The agent chooses the lightest safe mode, not the
+          most impressive-looking one.
+        </p>
+        <div class="modes">
+          <div class="mode">
+            <div>
+              <div class="label">01</div>
+              <h3>Single-pass</h3>
+              <p>Fast internal draft, simple summary, low-stakes wording, or informal first opinion.</p>
+            </div>
+            <div class="when">Signal: few inputs, low risk, speed matters.</div>
+          </div>
+          <div class="mode">
+            <div>
+              <div class="label">02</div>
+              <h3>Two-pass</h3>
+              <p>Create first, then review for source support, tone, overclaims, gaps, and risk.</p>
+            </div>
+            <div class="when">Signal: important, but not workflow-sized.</div>
+          </div>
+          <div class="mode">
+            <div>
+              <div class="label">03</div>
+              <h3>Cost-aware delegation</h3>
+              <p>A high-reasoning lead agent delegates bounded, verifiable subtasks to cheaper workers.</p>
+            </div>
+            <div class="when">Signal: processing volume without strategic judgment.</div>
+          </div>
+          <div class="mode">
+            <div>
+              <div class="label">04</div>
+              <h3>Small role team</h3>
+              <p>Several perspectives matter: PMO, sales, legal, compliance, finance, communication, or QA.</p>
+            </div>
+            <div class="when">Signal: perspective diversity matters more than volume.</div>
+          </div>
+          <div class="mode">
+            <div>
+              <div class="label">05</div>
+              <h3>Larger workflow</h3>
+              <p>Many inputs, high stakes, multiple work packages, independent verification, and synthesis.</p>
+            </div>
+            <div class="when">Signal: large document packs, RFPs, executive decisions.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section reveal" id="delegation" style="--i: 4">
+        <div class="section-head">
+          <div class="section-num">04</div>
+          <h2>Subagent delegation</h2>
+        </div>
+        <p class="section-note">
+          A subagent is not a way to transfer responsibility. It is a way to process a
+          bounded piece of work while the lead agent keeps ownership of synthesis and claims.
+        </p>
+        <div class="split">
+          <div class="lead-card">
+            <div class="label">Lead agent</div>
+            <h3>Strategy, boundaries, synthesis</h3>
+            <ul class="compact-list">
+              <li>chooses the work mode;</li>
+              <li>writes the worker mandate;</li>
+              <li>sets the verification level;</li>
+              <li>reconciles worker output with the full context;</li>
+              <li>owns or qualifies final claims.</li>
+            </ul>
+          </div>
+          <div class="delegation-card">
+            <div class="card-line"><b>Subtask</b><span>Exactly what the worker should do.</span></div>
+            <div class="card-line"><b>Why delegable</b><span>Bounded, factual, checkable, low strategic judgment.</span></div>
+            <div class="card-line"><b>Input</b><span>The documents, notes, records, or sources provided.</span></div>
+            <div class="card-line"><b>Forbidden decisions</b><span>What the worker must not decide or imply.</span></div>
+            <div class="card-line"><b>Return format</b><span>Structured candidate input for the lead agent.</span></div>
+            <div class="card-line"><b>Verification</b><span>Level 0-3 based on risk.</span></div>
+          </div>
+        </div>
+        <div class="callout">
+          The lead agent should not choose a "smarter" or "dumber" agent. It should choose
+          a work role that fits the risk, context, and verifiability of the subtask.
+        </div>
+      </section>
+
+      <section class="section reveal" id="verification" style="--i: 5">
+        <div class="section-head">
+          <div class="section-num">05</div>
+          <h2>Worker verification ladder</h2>
+        </div>
+        <p class="section-note">
+          Worker output is candidate input. Verification depth increases only when the
+          subtask risk justifies it.
+        </p>
+        <div class="ladder">
+          <div class="ladder-step" data-level="0">
+            <div class="label">Level 0</div>
+            <h3>Lead spot check</h3>
+            <p>Low-risk extraction or classification that is factual and easy to check.</p>
+          </div>
+          <div class="ladder-step" data-level="1">
+            <div class="label">Level 1</div>
+            <h3>One reviewer</h3>
+            <p>Medium-risk worker output that affects final claims or external communication.</p>
+          </div>
+          <div class="ladder-step" data-level="2">
+            <div class="label">Level 2</div>
+            <h3>Two verifiers</h3>
+            <p>Higher-stakes output where error could create reputational, legal, financial, sales, or project risk.</p>
+          </div>
+          <div class="ladder-step" data-level="3">
+            <div class="label">Level 3</div>
+            <h3>Fixer loop</h3>
+            <p>Critical or disputed output. Fix issues found by verifiers, then re-verify.</p>
+          </div>
+        </div>
+        <div class="callout">
+          After verification, the lead decides <code>accept</code>, <code>revise</code>,
+          or <code>reject</code>. Checked output still does not become automatic truth.
+        </div>
+      </section>
+
+      <section class="section reveal" id="stop-go" style="--i: 6">
+        <div class="section-head">
+          <div class="section-num">06</div>
+          <h2>Source gaps: stop or proceed?</h2>
+        </div>
+        <p class="section-note">
+          The skill is strict about sources, but it does not require impossible completeness.
+          The key question is whether the missing fact could materially change the safe use
+          of the output.
+        </p>
+        <div class="gates">
+          <div class="gate stop">
+            <span class="tag">stop</span>
+            <h3>Ask for specific input</h3>
+            <p>Use when the missing information could change the main conclusion and is realistically obtainable.</p>
+          </div>
+          <div class="gate go">
+            <span class="tag">go with constraints</span>
+            <h3>Proceed from what exists</h3>
+            <p>Use when deadlines, sales pressure, or access limits require progress. State the main constraint.</p>
+          </div>
+          <div class="gate source">
+            <span class="tag">source expansion</span>
+            <h3>Search external sources</h3>
+            <p>Use only when the missing information is realistically verifiable outside the private context.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section reveal" id="quality" style="--i: 7">
+        <div class="section-head">
+          <div class="section-num">07</div>
+          <h2>Quality gates</h2>
+        </div>
+        <p class="section-note">
+          These gates keep the system useful without forcing a fixed output template.
+        </p>
+        <div class="quality-grid">
+          <div class="quality"><b>Source support</b><span>What is input-backed, externally verified, assumed, or inferred?</span></div>
+          <div class="quality"><b>Source gaps</b><span>Could a missing fact change the main answer?</span></div>
+          <div class="quality"><b>Contradictions</b><span>Do sources conflict on dates, owners, scope, status, or terms?</span></div>
+          <div class="quality"><b>Overclaims</b><span>Does the wording sound stronger than the evidence?</span></div>
+          <div class="quality"><b>Audience fit</b><span>Is this internal, executive, client-facing, contract-related, or decision support?</span></div>
+          <div class="quality"><b>Usability</b><span>Can the user send, decide, brief, assign, or compare from this?</span></div>
+          <div class="quality"><b>Worker reliance</b><span>Was delegated output verified at the right depth?</span></div>
+          <div class="quality"><b>Constraints</b><span>Are limitations visible without overwhelming the output?</span></div>
+        </div>
+      </section>
+
+      <section class="section reveal" id="package" style="--i: 8">
+        <div class="section-head">
+          <div class="section-num">08</div>
+          <h2>Skill package shape</h2>
+        </div>
+        <p class="section-note">
+          The installable skill stays small. This explainer lives in repo-level docs so
+          installation remains lean while public onboarding is still available.
+        </p>
+        <div class="split">
+          <div class="file-structure">business-subagent-orchestrator/
+├── SKILL.md
+├── agents/
+│   └── openai.yaml
+└── references/
+    ├── decision-framework.md
+    ├── operating-modes.md
+    └── quality-gates.md</div>
+          <div class="lead-card">
+            <div class="label">Public documentation</div>
+            <h3>Docs explain, skills execute</h3>
+            <ul class="compact-list">
+              <li>the skill remains concise and installable;</li>
+              <li>the explainer helps people understand the operating model;</li>
+              <li>the README links both the skill and the visual explanation;</li>
+              <li>future examples can be added without bloating the skill.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer">
+          Source: <code>business-subagent-orchestrator</code> in the public
+          <code>attilabal/skills</code> repository.
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    (function() {
+      const toc = document.getElementById('toc');
+      const links = Array.from(toc.querySelectorAll('a'));
+      const sections = links
+        .map(link => {
+          const id = link.getAttribute('href').slice(1);
+          return { id, link, el: document.getElementById(id) };
+        })
+        .filter(item => item.el);
+
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          links.forEach(link => link.classList.remove('active'));
+          const match = sections.find(item => item.el === entry.target);
+          if (match) {
+            match.link.classList.add('active');
+            if (window.innerWidth <= 1000) {
+              match.link.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
+          }
+        });
+      }, { rootMargin: '-10% 0px -78% 0px', threshold: 0.01 });
+
+      sections.forEach(item => observer.observe(item.el));
+
+      links.forEach(link => {
+        link.addEventListener('click', event => {
+          event.preventDefault();
+          const id = link.getAttribute('href').slice(1);
+          const el = document.getElementById(id);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            history.replaceState(null, '', '#' + id);
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
