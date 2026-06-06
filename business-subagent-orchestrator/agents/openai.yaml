@@ -1,0 +1,7 @@
+interface:
+  display_name: "Business Subagent Orchestrator"
+  short_description: "Gate complex business work with subagents"
+  default_prompt: "Use $business-subagent-orchestrator to choose the right work mode, delegation pattern, and verification depth for this complex business task."
+
+policy:
+  allow_implicit_invocation: false
